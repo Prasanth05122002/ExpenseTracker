@@ -1,14 +1,14 @@
 package com.prasanth.ExpenseTracker.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 import java.util.List;
 
 @Data
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -30,4 +30,5 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses;
+
 }
