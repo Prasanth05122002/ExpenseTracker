@@ -1,0 +1,48 @@
+# Use version 3.8 of the Docker Compose file format
+version: '3.8'
+
+# Define the services (containers) that make up your application
+services:
+  # Define the MySQL database service
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Good$123
+      MYSQL_DATABASE: expense
+    ports:
+      # This is a key part for isolation.
+      # It maps port 3307 on your local machine to port 3306 inside the container.
+      # This allows you to connect a tool like DBeaver or MySQL Workbench to the
+      # database running inside Docker, without conflicting with your local MySQL on 3306.
+      - "3307:3306"
+    volumes:
+      # This safely stores the database data on your machine, so it persists
+      # even when the container is stopped and removed.
+      - mysql-data:/var/lib/mysql
+
+  # Define your Spring Boot application service
+  app:
+    container_name: spring-boot-app
+    # Build the Docker image from the Dockerfile in the current directory
+    build: .
+    restart: on-failure
+    # This is crucial: it makes the app wait for the db to be ready before starting.
+    depends_on:
+      - db
+    ports:
+      # Map the host port 8080 to the container port 8080
+      - "8080:8080"
+    environment:
+      # --- THIS IS THE MAGIC ---
+      # The app connects to the database using its service name 'db'.
+      # Docker's internal networking resolves 'db' to the database container's IP address.
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/expense
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Good$123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+# Define the named volume for data persistence
+volumes:
+  mysql-data:
