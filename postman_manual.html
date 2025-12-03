@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker API - Postman Manual</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        h1, h2, h3 { color: #0056b3; }
+        code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+        .step { margin-bottom: 20px; }
+        .step-title { font-weight: bold; font-size: 1.2em; }
+        .screenshot { border: 1px solid #ddd; border-radius: 4px; max-width: 100%; height: auto; margin-top: 10px; }
+        .note { background-color: #e7f3fe; border-left: 6px solid #2196F3; padding: 10px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <h1>Expense Tracker API: Postman Manual</h1>
+
+    <p>This guide will walk you through setting up Postman to test the Expense Tracker API. You will learn how to import the provided collection and environment, and how to execute the API requests in the correct order.</p>
+
+    <h2>Step 1: Import the Collection and Environment</h2>
+    <div class="step">
+        <p class="step-title">1.1. Open Postman and go to the "Import" dialog.</p>
+        <p>In the Postman window, click the <strong>Import</strong> button in the top-left corner.</p>
+        
+        <p class="step-title">1.2. Upload the two JSON files.</p>
+        <p>Drag and drop both <code>ExpenseTracker.postman_collection.json</code> and <code>ExpenseTracker.postman_environment.json</code> into the import window. Postman will recognize them as a collection and an environment.</p>
+        
+        <p class="step-title">1.3. Confirm the import.</p>
+        <p>Click the final <strong>Import</strong> button to add them to your workspace.</p>
+    </div>
+
+    <h2>Step 2: Select the Environment</h2>
+    <div class="step">
+        <p class="step-title">2.1. Activate the "Expense Tracker Env".</p>
+        <p>In the top-right corner of Postman, click the environment dropdown (it might say "No Environment") and select <strong>Expense Tracker Env</strong>. This will activate the variables we need, like <code>baseUrl</code>.</p>
+    </div>
+
+    <h2>Step 3: API Testing Flow</h2>
+    <p>Follow these requests in order. The collection is designed so that logging in will automatically save the authentication token for all subsequent requests.</p>
+
+    <div class="step">
+        <h3>3.1. Register a New User</h3>
+        <p>This request creates a new user account.</p>
+        <ol>
+            <li>In the collection panel on the left, expand the <strong>Authentication</strong> folder.</li>
+            <li>Select the <strong>Register New User</strong> request.</li>
+            <li>The request body is pre-filled with sample data. You can modify the <code>email</code> or <code>password</code> if you wish.</li>
+            <li>Click <strong>Send</strong>. You should receive a success message.</li>
+        </ol>
+        <div class="note">
+            <strong>Note:</strong> If you try to register the same email twice, you will get an error, which is the expected behavior.
+        </div>
+    </div>
+
+    <div class="step">
+        <h3>3.2. Login and Get JWT</h3>
+        <p>This request authenticates the user and automatically saves the JWT token.</p>
+        <ol>
+            <li>Select the <strong>Login and Get JWT</strong> request in the same folder.</li>
+            <li>The body should contain the same credentials you just registered.</li>
+            <li>Click <strong>Send</strong>.</li>
+        </ol>
+        <div class="note">
+            <strong>Automatic Token Saving:</strong> This request has a test script that automatically finds the JWT in the response and saves it to the <code>jwt_token</code> environment variable. You don't need to copy or paste anything!
+        </div>
+    </div>
+
+    <div class="step">
+        <h3>3.3. Add, View, and Manage Expenses</h3>
+        <p>Now that you are "logged in," you can use the endpoints in the <strong>Expenses</strong> and <strong>Filters</strong> folders.</p>
+        <ol>
+            <li>Expand the <strong>Expenses</strong> folder and select the <strong>Add New Expense</strong> request.</li>
+            <li>Notice in the <strong>Authorization</strong> tab that the "Bearer Token" type is selected and its value is <code>{{jwt_token}}</code>. Postman automatically substitutes this with the token you received at login.</li>
+            <li>Click <strong>Send</strong> to create a new expense.</li>
+            <li>Try the other requests like <strong>Get All Expenses</strong>, <strong>Update Expense</strong>, and <strong>Delete Expense</strong>. You may need to change the ID in the URL (e.g., <code>/expenses/1</code>) to match an ID from your database.</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h3>3.4. Filter Expenses</h3>
+        <p>Use the requests in the <strong>Filters</strong> folder to test the filtering and summary logic.</p>
+        <ol>
+            <li>Select the <strong>Filter Expenses</strong> request.</li>
+            <li>Modify the query parameters in the URL (<code>dateFrom</code>, <code>dateTo</code>, <code>category</code>) to test different filter combinations.</li>
+            <li>Click <strong>Send</strong> to see the filtered results.</li>
+        </ol>
+    </div>
+
+    <p>You have now successfully set up Postman and tested the complete flow of the Expense Tracker API!</p>
+
+</body>
+</html>
